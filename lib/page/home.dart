@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ class _HomeState extends State<Home> {
       },
       {
         "image": "assets/images/ara-4.jpg",
-        "title": "LA갈비 5kg팔아요",
+        "title": "맥북 싸게 처분합니다 / 내고 없음 / 쿨거래 환영합니다 / 직거래만 합니다",
         "location": "제주 제주시 아라동",
         "price": "100000",
         "likes": "155",
@@ -143,9 +144,31 @@ class _HomeState extends State<Home> {
                     // mainAxisAlignment: ,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(datas[index]["title"] ?? ''),
-                      Text(datas[index]["location"] ?? ''),
-                      Text(datas[index]["price"] ?? ''),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        datas[index]["title"] ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        datas[index]["location"] ?? '',
+                        style: TextStyle(
+                            fontSize: 13, color: Colors.black.withOpacity(0.3)),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        calcStringTowon(datas[index]["price"] ?? ''),
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Row(
@@ -174,6 +197,12 @@ class _HomeState extends State<Home> {
         return Container(height: 1, color: Colors.black.withOpacity(0.5));
       },
     );
+  }
+
+  final oCcy = new NumberFormat("#,###", "ko_KR");
+  String calcStringTowon(String priceString) {
+    var number = oCcy.format(int.parse(priceString));
+    return "${number} 원";
   }
 
   @override
