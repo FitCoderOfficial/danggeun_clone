@@ -11,10 +11,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Map<String, String>> datas = [];
+  late int _currentPageIndex;
 
   @override
   void initState() {
     super.initState();
+    _currentPageIndex = 0;
     datas = [
       {
         "image": "assets/images/ara-1.jpg",
@@ -205,12 +207,60 @@ class _HomeState extends State<Home> {
     return "${number} 원";
   }
 
+  Widget _bottomNavigationBarwidget() {
+    return BottomNavigationBar(
+        onTap: (int index) {
+          print(index);
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        currentIndex: _currentPageIndex,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                size: 20,
+                color: Colors.black54,
+              ),
+              label: "홈"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.document_scanner,
+                size: 20,
+                color: Colors.black54,
+              ),
+              label: "동네 생활"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.map,
+                size: 20,
+                color: Colors.black54,
+              ),
+              label: "내 근처"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.chat,
+                size: 20,
+                color: Colors.black54,
+              ),
+              label: "채팅"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+                size: 20,
+                color: Colors.black54,
+              ),
+              label: "설정"),
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appbarWidget(),
       body: _bodyWidget(),
-      // bottomNavigationBar: Container(),
+      bottomNavigationBar: _bottomNavigationBarwidget(),
       // bottomNavigationBar: Container(),
     );
   }
