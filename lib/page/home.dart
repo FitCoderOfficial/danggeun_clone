@@ -209,6 +209,7 @@ class _HomeState extends State<Home> {
 
   Widget _bottomNavigationBarwidget() {
     return BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         onTap: (int index) {
           print(index);
           setState(() {
@@ -216,40 +217,59 @@ class _HomeState extends State<Home> {
           });
         },
         currentIndex: _currentPageIndex,
+        selectedFontSize: 12,
+        selectedItemColor: Colors.black54,
+        selectedLabelStyle: TextStyle(color: Colors.black54),
         items: [
           BottomNavigationBarItem(
-              icon: Icon(
+            icon: Padding(
+              padding: const EdgeInsets.only(bottom: 3.0),
+              child: Icon(
                 Icons.home,
                 size: 20,
                 color: Colors.black54,
               ),
-              label: "홈"),
+            ),
+            label: "홈",
+          ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.document_scanner,
-                size: 20,
-                color: Colors.black54,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(
+                  Icons.document_scanner,
+                  size: 20,
+                  color: Colors.black54,
+                ),
               ),
               label: "동네 생활"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.map,
-                size: 20,
-                color: Colors.black54,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(
+                  Icons.map,
+                  size: 20,
+                  color: Colors.black54,
+                ),
               ),
               label: "내 근처"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.chat,
-                size: 20,
-                color: Colors.black54,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(
+                  Icons.chat,
+                  size: 20,
+                  color: Colors.black54,
+                ),
               ),
               label: "채팅"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                size: 20,
-                color: Colors.black54,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(
+                  Icons.person,
+                  size: 20,
+                  color: Colors.black54,
+                ),
               ),
               label: "설정"),
         ]);
