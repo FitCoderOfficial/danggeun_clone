@@ -120,6 +120,18 @@ class _HomeState extends State<Home> {
   }
 
   Widget _bodyWidget() {
+    switch (_currentPageIndex) {
+      case 0:
+        break;
+      case 1:
+        return Container();
+      case 2:
+        return Container();
+      case 3:
+        return Container();
+      case 4:
+        return Container();
+    }
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (BuildContext _context, int index) {
@@ -225,52 +237,87 @@ class _HomeState extends State<Home> {
             icon: Padding(
               padding: const EdgeInsets.only(bottom: 3.0),
               child: Icon(
-                Icons.home,
+                Icons.home_outlined,
                 size: 20,
                 color: Colors.black54,
               ),
             ),
+            activeIcon: Padding(
+                padding: const EdgeInsets.only(bottom: 3.0),
+                child: Icon(
+                  Icons.home,
+                  size: 20,
+                  color: Colors.black54,
+                )),
             label: "홈",
           ),
           BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 3.0),
                 child: Icon(
-                  Icons.document_scanner,
+                  Icons.document_scanner_outlined,
                   size: 20,
                   color: Colors.black54,
                 ),
               ),
+              activeIcon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Icon(
+                    Icons.document_scanner,
+                    size: 20,
+                    color: Colors.black54,
+                  )),
               label: "동네 생활"),
           BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 3.0),
                 child: Icon(
-                  Icons.map,
+                  Icons.map_outlined,
                   size: 20,
                   color: Colors.black54,
                 ),
               ),
+              activeIcon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Icon(
+                    Icons.map,
+                    size: 20,
+                    color: Colors.black54,
+                  )),
               label: "내 근처"),
           BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 3.0),
                 child: Icon(
-                  Icons.chat,
+                  Icons.chat_outlined,
                   size: 20,
                   color: Colors.black54,
                 ),
               ),
+              activeIcon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Icon(
+                    Icons.chat,
+                    size: 20,
+                    color: Colors.black54,
+                  )),
               label: "채팅"),
           BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 3.0),
                 child: Icon(
-                  Icons.person,
+                  Icons.person_outlined,
                   size: 20,
                   color: Colors.black54,
                 ),
               ),
+              activeIcon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Icon(
+                    Icons.person,
+                    size: 20,
+                    color: Colors.black54,
+                  )),
               label: "설정"),
         ]);
   }
@@ -278,7 +325,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appbarWidget(),
+      // appBar: _appbarWidget(),
       body: _bodyWidget(),
       bottomNavigationBar: _bottomNavigationBarwidget(),
       // bottomNavigationBar: Container(),
