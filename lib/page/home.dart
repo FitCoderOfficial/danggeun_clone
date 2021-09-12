@@ -1,334 +1,220 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_carrot_market/repository/contents_repository.dart';
+import 'package:flutter_carrot_market/utils/data_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
+
+import 'detail.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  Home({Key key}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  List<Map<String, String>> datas = [];
-  late int _currentPageIndex;
+  final ContentsRepository contentsRepository = ContentsRepository();
+  String currentLocation;
+  final Map<String, String> locationTypeToString = {
+    "ara": "아라동",
+    "ora": "오라동",
+    "donam": "도남동",
+  };
+  bool isLoading;
 
   @override
   void initState() {
     super.initState();
-    _currentPageIndex = 0;
-    datas = [
-      {
-        "image": "assets/images/ara-1.jpg",
-        "title": "네메시스 축구화 275",
-        "location": "제주 제주시 아라동",
-        "price": "30000",
-        "likes": "2",
-      },
-      {
-        "image": "assets/images/ara-2.jpg",
-        "title": "LA갈비 5kg팔아요",
-        "location": "제주 제주시 아라동",
-        "price": "100000",
-        "likes": "82",
-      },
-      {
-        "image": "assets/images/ara-3.jpg",
-        "title": "치약팝니다",
-        "location": "제주 제주시 아라동",
-        "price": "5000",
-        "likes": "72",
-      },
-      {
-        "image": "assets/images/ara-4.jpg",
-        "title": "맥북 싸게 처분합니다 / 내고 없음 / 쿨거래 환영합니다 / 직거래만 합니다",
-        "location": "제주 제주시 아라동",
-        "price": "100000",
-        "likes": "155",
-      },
-      {
-        "image": "assets/images/ara-5.jpg",
-        "title": "치약팝니다",
-        "location": "제주 제주시 아라동",
-        "price": "5000",
-        "likes": "84",
-      },
-      {
-        "image": "assets/images/ara-6.jpg",
-        "title": "갤럭시 64g",
-        "location": "제주 제주시 아라동",
-        "price": "100000",
-        "likes": "125",
-      },
-      {
-        "image": "assets/images/ara-7.jpg",
-        "title": "치약팝니다",
-        "location": "제주 제주시 아라동",
-        "price": "5000",
-        "likes": "99",
-      },
-      {
-        "image": "assets/images/ara-8.jpg",
-        "title": "LA갈비 5kg팔아요",
-        "location": "제주 제주시 아라동",
-        "price": "100000",
-        "likes": "63",
-      },
-      {
-        "image": "assets/images/ara-9.jpg",
-        "title": "치약팝니다",
-        "location": "제주 제주시 아라동",
-        "price": "5000",
-        "likes": "32",
-      },
-      {
-        "image": "assets/images/ara-10.jpg",
-        "title": "치약팝니다",
-        "location": "제주 제주시 아라동",
-        "price": "5000",
-        "likes": "11",
-      },
-    ];
+    currentLocation = "ara";
+    isLoading = false;
   }
 
-  PreferredSizeWidget _appbarWidget() {
+  /*
+  * appBar Widget 구현 
+  */
+  Widget _appbarWidget() {
     return AppBar(
       title: GestureDetector(
         onTap: () {
-          print("click");
+          print("click event");
         },
-        onLongPress: () {
-          print("long press!");
-        },
-        child: Row(
-          children: [Text("용산구"), Icon(Icons.arrow_drop_down)],
+        child: PopupMenuButton<String>(
+          offset: Offset(0, 20),
+          shape: ShapeBorder.lerp(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              1),
+          child: Row(
+            children: [
+              Text(locationTypeToString[currentLocation]),
+              Icon(Icons.arrow_drop_down),
+            ],
+          ),
+          onSelected: (String value) {
+            setState(() {
+              currentLocation = value;
+            });
+          },
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(
+                value: "ara",
+                child: Text("아라동"),
+              ),
+              PopupMenuItem(
+                value: "ora",
+                child: Text("오라동"),
+              )
+            ];
+          },
         ),
       ),
-      elevation: 1,
+      elevation: 1, // 그림자를 표현되는 높이 3d 측면의 높이를 뜻함.
       actions: [
         IconButton(onPressed: () {}, icon: Icon(Icons.search)),
         IconButton(onPressed: () {}, icon: Icon(Icons.tune)),
         IconButton(
-            // onPressed: () {}, icon: Icon(Icons.doorbell_sharp)),
-            onPressed: () {},
-            icon: SvgPicture.asset(
-              'assets/svg/bell.svg',
-              width: 22,
-            )),
+          onPressed: () {},
+          icon: SvgPicture.asset(
+            "assets/svg/bell.svg",
+            width: 22,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _bodyWidget() {
-    switch (_currentPageIndex) {
-      case 0:
-        break;
-      case 1:
-        return Container();
-      case 2:
-        return Container();
-      case 3:
-        return Container();
-      case 4:
-        return Container();
-    }
+  Future<List<Map<String, String>>> _loadContents() async {
+    List<Map<String, String>> responseData =
+        await contentsRepository.loadContentsFromLocation(currentLocation);
+    return responseData;
+  }
+
+  Widget _makeDataList(List<Map<String, String>> datas) {
+    int size = datas == null ? 0 : datas.length;
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      itemBuilder: (BuildContext _context, int index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Container(
-              child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.asset(
-                  datas[index]["image"] ?? '',
-                  width: 100,
-                  height: 100,
-                ),
-              ),
-              // SizedBox(width: 20),
-              Expanded(
-                child: Container(
-                  height: 100,
-                  padding: const EdgeInsets.only(left: 20),
-                  // color: Colors.blue,
-                  child: Column(
-                    // mainAxisAlignment: ,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 5,
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      physics: ClampingScrollPhysics(), // bounce 효과를 제거 할 수 있다.
+      itemBuilder: (BuildContext context, int index) {
+        if (datas != null && datas.length > 0) {
+          Map<String, String> data = datas[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return DetailContentView(data: data);
+              }));
+            },
+            child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      child: Hero(
+                        tag: data["cid"],
+                        child: Image.asset(
+                          data["image"],
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
+                        ),
                       ),
-                      Text(
-                        datas[index]["title"] ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        datas[index]["location"] ?? '',
-                        style: TextStyle(
-                            fontSize: 13, color: Colors.black.withOpacity(0.3)),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        calcStringTowon(datas[index]["price"] ?? ''),
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w500),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 100,
+                        padding: const EdgeInsets.only(left: 20, top: 2),
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SvgPicture.asset(
-                              "assets/svg/heart_off.svg",
-                              width: 13,
+                            Text(
+                              data["title"],
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 15),
                             ),
-                            SizedBox(width: 5),
-                            Text(datas[index]["likes"] ?? ''),
+                            SizedBox(height: 5),
+                            Text(
+                              data["location"],
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xff999999)),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              DataUtils.calcStringToWon(data["price"]),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      height: 18,
+                                      child: SvgPicture.asset(
+                                        "assets/svg/heart_off.svg",
+                                        width: 13,
+                                        height: 13,
+                                      ),
+                                    ),
+                                    SizedBox(width: 3),
+                                    Text(data["likes"]),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )),
-        );
+                      ),
+                    )
+                  ],
+                )),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
-      itemCount: 10,
-      separatorBuilder: (BuildContext _context, int index) {
-        return Container(height: 1, color: Colors.black.withOpacity(0.5));
+      itemCount: size,
+      separatorBuilder: (BuildContext context, int index) {
+        return Container(
+          height: 1,
+          color: Colors.black.withOpacity(0.1),
+        );
       },
     );
   }
 
-  final oCcy = new NumberFormat("#,###", "ko_KR");
-  String calcStringTowon(String priceString) {
-    var number = oCcy.format(int.parse(priceString));
-    return "${number} 원";
-  }
-
-  Widget _bottomNavigationBarwidget() {
-    return BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        onTap: (int index) {
-          print(index);
-          setState(() {
-            _currentPageIndex = index;
-          });
-        },
-        currentIndex: _currentPageIndex,
-        selectedFontSize: 12,
-        selectedItemColor: Colors.black54,
-        selectedLabelStyle: TextStyle(color: Colors.black54),
-        items: [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 3.0),
-              child: Icon(
-                Icons.home_outlined,
-                size: 20,
-                color: Colors.black54,
-              ),
-            ),
-            activeIcon: Padding(
-                padding: const EdgeInsets.only(bottom: 3.0),
-                child: Icon(
-                  Icons.home,
-                  size: 20,
-                  color: Colors.black54,
-                )),
-            label: "홈",
-          ),
-          BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 3.0),
-                child: Icon(
-                  Icons.document_scanner_outlined,
-                  size: 20,
-                  color: Colors.black54,
-                ),
-              ),
-              activeIcon: Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Icon(
-                    Icons.document_scanner,
-                    size: 20,
-                    color: Colors.black54,
-                  )),
-              label: "동네 생활"),
-          BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 3.0),
-                child: Icon(
-                  Icons.map_outlined,
-                  size: 20,
-                  color: Colors.black54,
-                ),
-              ),
-              activeIcon: Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Icon(
-                    Icons.map,
-                    size: 20,
-                    color: Colors.black54,
-                  )),
-              label: "내 근처"),
-          BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 3.0),
-                child: Icon(
-                  Icons.chat_outlined,
-                  size: 20,
-                  color: Colors.black54,
-                ),
-              ),
-              activeIcon: Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Icon(
-                    Icons.chat,
-                    size: 20,
-                    color: Colors.black54,
-                  )),
-              label: "채팅"),
-          BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 3.0),
-                child: Icon(
-                  Icons.person_outlined,
-                  size: 20,
-                  color: Colors.black54,
-                ),
-              ),
-              activeIcon: Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Icon(
-                    Icons.person,
-                    size: 20,
-                    color: Colors.black54,
-                  )),
-              label: "설정"),
-        ]);
+  /*
+   * body UI 
+   */
+  Widget _bodyWidget() {
+    return FutureBuilder(
+      future: _loadContents(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("데이터 오류"));
+        }
+        if (snapshot.hasData) {
+          return _makeDataList(snapshot.data);
+        }
+        return Center(child: Text("해당 지역에 데이터가 없습니다."));
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: _appbarWidget(),
+      appBar: _appbarWidget(),
       body: _bodyWidget(),
-      bottomNavigationBar: _bottomNavigationBarwidget(),
-      // bottomNavigationBar: Container(),
     );
   }
 }
