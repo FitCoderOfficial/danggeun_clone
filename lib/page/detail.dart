@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carrot_market/components/manor_temperature_widget.dart';
-import 'package:flutter_carrot_market/repository/contents_repository.dart';
-import 'package:flutter_carrot_market/utils/data_utils.dart';
+import 'package:danggeun_clone/repository/contents_repository.dart';
+import 'package:danggeun_clone/utils/data_utils.dart';
 import 'package:flutter_svg/svg.dart';
 
 class DetailContentView extends StatefulWidget {

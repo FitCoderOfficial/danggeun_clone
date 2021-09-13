@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'detail.dart';
-import 'package:flutter_carrot_market/repository/contents_repository.dart';
-import 'package:flutter_carrot_market/utils/data_utils.dart';
+import 'package:danggeun_clone/repository/contents_repository.dart';
+import 'package:danggeun_clone/utils/data_utils.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MyFavoriteContents extends StatefulWidget {
